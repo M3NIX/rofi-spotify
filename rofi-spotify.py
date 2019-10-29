@@ -91,8 +91,8 @@ elif args.default_device: # when --default-device is present
     index, key = r.select('Spotify Device', options)
 
     if(key == 0): # Enter
-        device = options[index]
-        config["global"]['default_device'] = device
+        device = devices[index]
+        config["global"]['default_device'] = str(device)
         os.makedirs(os.path.dirname(config_file), exist_ok=True)
         with open(config_file, 'w') as conf:
             config.write(conf)
@@ -116,7 +116,7 @@ else:
 
     if "default_device" in config["global"]:
         for d in devices:
-            if d.name == config["global"]["default_device"]:
+            if str(d) == config["global"]["default_device"]:
                 device = d
     
     options = []
