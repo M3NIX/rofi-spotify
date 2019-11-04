@@ -1,6 +1,6 @@
 # rofi-spotify
 
-A simple playlist picker for spotify with rofi as frontend
+A spotify application with rofi as frontend
 
 ## Installing
 
@@ -26,16 +26,16 @@ Your config will be stored under `~/.config/rofi-spotify/config`
 
 ## Usage
 
-Create a keybinding which launches the script without any parameters.
+Create a keybinding which launches the script.
 To be able to play song you will need a running spotify client (e.g. [spotifyd](https://github.com/Spotifyd/spotifyd))
 
 By default:
-- the playlist will start with shuffling turned on
 - the script will give notifications (with notify-send) when starting a playlist/song
 - choose the first available active spotify device 
 
-To disable this default behaviour you can use the flags `--no-shuffle` and `--no-notify`.
-To select a default device which should get used (when available) run the script once with `--default-device`. 
+To disable notification you can use the flag `--no-notify`.
+
+To select a default device which should get used run the script once with `--default-device`. This will give you a rofi prompt to select a currently available device and will save that in the config file for the future.
 
 # Keyboard shortcuts
 

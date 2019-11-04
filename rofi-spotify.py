@@ -39,12 +39,29 @@ def authorize(redirect_uri, client_id, secret, grant_type, token_code):
         auth['refresh_token'] = response_json["refresh_token"]
 
     config["auth"] = auth
+    config["global"] = {}
     config["global"]["client_id"] = client_id
     config["global"]["secret"] = secret
     config["global"]["redirect_uri"] = redirect_uri
     os.makedirs(os.path.dirname(config_file), exist_ok=True)
     with open(config_file, 'w') as conf:
         config.write(conf)
+
+def player_control(key, player, args):
+    if(key == 5): # Alt+Return
+        if(player.is_playing):
+            player.pause()
+        else:
+            player.resume()
+            if not args.no_notify: notify_song(user)
+    elif(key == 6): # Alt-Left
+        player.previous()
+        player.previous()
+        if not args.no_notify: notify_song(user)
+    elif(key == 7): # Alt-Right
+        player.next()
+        if not args.no_notify: notify_song(user)
+
 
 # main starts here
 
@@ -57,7 +74,6 @@ config.read(config_file)
 parser = argparse.ArgumentParser(description='Rofi frontend for simple spotify control')
 parser.add_argument('--setup', action='store_true', help='Setup your config file')
 parser.add_argument('--default-device', action='store_true', help='Select your default device')
-parser.add_argument('--no-shuffle', action='store_true', help='Disable shuffling when starting a playlist')
 parser.add_argument('--no-notify', action='store_true', help='Disable the notifications when starting songs')
 args = parser.parse_args()
 
@@ -129,24 +145,28 @@ else:
     if 'item' in curr:
         msg += Rofi.escape(curr['item'].name + " - " + curr['item'].artist.name)
 
-    index, key = r.select('Spotify', options, message=msg, key5=('Alt+Return', "Play/Pause"), key6=('Alt+Left', "Previous"), key7=('Alt+Right', "Next"))
+    playlist_index, playlist_key = r.select('Playlist', options, message=msg, key5=('Alt+Return', "Play/Pause"), key6=('Alt+Left', "Previous"), key7=('Alt+Right', "Next"), rofi_args=['-matching', 'regex'])
 
-    if(key == 0): # Enter
-        player.play(playlists[index], device=device)
-        if not args.no_shuffle:
-            player.shuffle(state=True, device=device)
-            player.next(device=device)
-        if not args.no_notify: notify_song(user)
-    elif(key == 5): # Alt+Return
-        if(player.is_playing):
-            player.pause()
+    if(playlist_key == 0): # Enter from playlist selection
+        songs = playlists[playlist_index].get_all_tracks()
+
+        options = ["Shuffle"]
+        for s in songs:
+            options.append(s.name + " - " + s.artist.name)
+        song_index, song_key = r.select('Song', options, message=msg, key5=('Alt+Return', "Play/Pause"), key6=('Alt+Left', "Previous"), key7=('Alt+Right', "Next"))
+        
+        if(song_key == 0): # Enter from song selection
+            if(song_index == 0): # Shuffle Option selected
+                player.play(playlists[playlist_index], device=device)
+                player.shuffle(state=True, device=device)
+                player.set_repeat(state="context", device=device)
+                player.next(device=device)
+                if not args.no_notify: notify_song(user)
+            else:
+                player.play(playlists[playlist_index], offset=song_index-1, device=device)
+                if not args.no_notify: notify_song(user)
         else:
-            player.resume()
-            if not args.no_notify: notify_song(user)
-    elif(key == 6): # Alt-Left
-        player.previous()
-        player.previous()
-        if not args.no_notify: notify_song(user)
-    elif(key == 7): # Alt-Right
-        player.next()
-        if not args.no_notify: notify_song(user)
+            player_control(song_key, player, args)
+         
+    else:
+        player_control(playlist_key, player, args)
