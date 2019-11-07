@@ -128,8 +128,9 @@ else:
     devices = user.get_devices()
     if len(devices) == 0: r.error("No device found where music could get played on")
     device = devices[0]
+    r.status("Loading playlists...")
     playlists = user.get_all_playlists()
-    
+    r.close()
 
     if "default_device" in config["global"]:
         for d in devices:
@@ -148,8 +149,9 @@ else:
     playlist_index, playlist_key = r.select('Playlist', options, message=msg, key5=('Alt+Return', "Play/Pause"), key6=('Alt+Left', "Previous"), key7=('Alt+Right', "Next"), rofi_args=['-i'])
 
     if(playlist_key == 0): # Enter from playlist selection
+        r.status("Loading songs...")
         songs = playlists[playlist_index].get_all_tracks()
-
+        r.close()
         options = ["Shuffle"]
         for s in songs:
             options.append(s.name + " - " + s.artist.name)
