@@ -73,7 +73,7 @@ config.read(config_file)
 # initialize argument parser
 parser = argparse.ArgumentParser(description='Rofi frontend for simple spotify control')
 parser.add_argument('--setup', action='store_true', help='Setup your config file')
-parser.add_argument('--default-device', action='store_true', help='Select your default device')
+parser.add_argument('--set-default-device', action='store_true', help='Select your default device')
 parser.add_argument('--no-notify', action='store_true', help='Disable the notifications when starting songs')
 args = parser.parse_args()
 
@@ -94,7 +94,7 @@ if args.setup: # when --setup is present
     parsed_url = urlparse(url)
     code = parsed_url.query.split('=')[1]
     authorize(redirect_uri, client_id, secret, "authorization_code", code)
-elif args.default_device: # when --default-device is present
+elif args.set_default_device: # when --set-default-device is present
     if 'auth' not in config:
         r.error('Please start the script in the command line with --setup')
         exit(0)
@@ -145,7 +145,7 @@ else:
     if 'item' in curr:
         msg += Rofi.escape(curr['item'].name + " - " + curr['item'].artist.name)
 
-    playlist_index, playlist_key = r.select('Playlist', options, message=msg, key5=('Alt+Return', "Play/Pause"), key6=('Alt+Left', "Previous"), key7=('Alt+Right', "Next"), rofi_args=['-matching', 'regex'])
+    playlist_index, playlist_key = r.select('Playlist', options, message=msg, key5=('Alt+Return', "Play/Pause"), key6=('Alt+Left', "Previous"), key7=('Alt+Right', "Next"), rofi_args=['-i'])
 
     if(playlist_key == 0): # Enter from playlist selection
         songs = playlists[playlist_index].get_all_tracks()
@@ -153,7 +153,7 @@ else:
         options = ["Shuffle"]
         for s in songs:
             options.append(s.name + " - " + s.artist.name)
-        song_index, song_key = r.select('Song', options, message=msg, key5=('Alt+Return', "Play/Pause"), key6=('Alt+Left', "Previous"), key7=('Alt+Right', "Next"))
+        song_index, song_key = r.select('Song', options, message=msg, key5=('Alt+Return', "Play/Pause"), key6=('Alt+Left', "Previous"), key7=('Alt+Right', "Next"), rofi_args=['-i'])
         
         if(song_key == 0): # Enter from song selection
             if(song_index == 0): # Shuffle Option selected

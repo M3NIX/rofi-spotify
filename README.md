@@ -35,7 +35,7 @@ By default:
 
 To disable notification you can use the flag `--no-notify`.
 
-To select a default device which should get used run the script once with `--default-device`. This will give you a rofi prompt to select a currently available device and will save that in the config file for the future.
+To select a default device which should get used run the script once with `--set-default-device`. This will give you a rofi prompt to select a currently available device and will save that in the config file for the future.
 
 # Keyboard shortcuts
 
