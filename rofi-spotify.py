@@ -126,7 +126,9 @@ else:
     user = client.user_from_token(config['auth']['access_token'])
     player = user.get_player()
     devices = user.get_devices()
-    if len(devices) == 0: r.error("No device found where music could get played on")
+    if len(devices) == 0: 
+        r.error("No device found where music could get played on")
+        exit(0)
     device = devices[0]
     r.status("Loading playlists...")
     playlists = user.get_all_playlists()
