@@ -4,7 +4,7 @@ A spotify application with rofi as frontend
 
 ## Installing
 
-`pip install python-rofi notify-send spotify --user`
+`pip install -r requirements.txt --user`
 
 ## Setup 
 

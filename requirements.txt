@@ -1,0 +1,3 @@
+notify-send
+spotify
+git+https://github.com/bcbnz/python-rofi.git
