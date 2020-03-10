@@ -6,6 +6,15 @@ A spotify application with rofi as frontend
 
 `pip install -r requirements.txt --user`
 
+or
+
+```
+virtualenv -p python3 virtualenv
+pip install -r requirements.txt
+```
+
+
+
 ## Setup 
 
 1. Go to the [Spotify dashboard](https://developer.spotify.com/dashboard/applications)
